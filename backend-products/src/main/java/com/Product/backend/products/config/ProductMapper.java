@@ -8,7 +8,11 @@ import com.Product.backend.products.entity.Product;
 public class ProductMapper {
 
     //entity to dto
-    public static ProductDTO toProductDto (Product product){
+    public static ProductDTO toProductDto(Product product) {
+        if (product == null) {
+            return null;
+        }
+
         return new ProductDTO(
                 product.getId(),
                 product.getName(),
@@ -19,13 +23,17 @@ public class ProductMapper {
     }
 
     // dto to entity
-    public static  Product toProductEntity(ProductDTO productDTO, Category category){
+    public static Product toProductEntity(ProductDTO productDTO, Category category) {
+        if (productDTO == null) {
+            return null;
+        }
+
         Product product = new Product();
         product.setName(productDTO.getName());
         product.setDescription(productDTO.getDescription());
         product.setPrice(productDTO.getPrice());
         product.setCategory(category);
 
-        return  product;
+        return product;
     }
 }

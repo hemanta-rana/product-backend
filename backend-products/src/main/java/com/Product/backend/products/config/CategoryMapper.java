@@ -1,7 +1,10 @@
 package com.Product.backend.products.config;
 
 import com.Product.backend.products.dto.CategoryDTO;
+import com.Product.backend.products.dto.ProductDTO;
 import com.Product.backend.products.entity.Category;
+
+import java.util.List;
 
 public class CategoryMapper {
 
@@ -16,12 +19,15 @@ public class CategoryMapper {
             return null;
         }
         CategoryDTO categoryDTO = new CategoryDTO();
+
         categoryDTO.setId(category.getId());
         categoryDTO.setName(category.getName());
-        categoryDTO.setProducts(category.getProducts());
-
-
-
+        if (category.getProducts() != null) {
+            List<ProductDTO> productDTOs = category.getProducts().stream()
+                    .map(ProductMapper::toProductDto)
+                    .toList();
+            categoryDTO.setProducts(productDTOs);
+        }
         return categoryDTO;
     }
 
