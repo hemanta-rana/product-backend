@@ -1,13 +1,15 @@
 package com.Product.backend.products.service;
 
 import com.Product.backend.products.config.CategoryMapper;
-import com.Product.backend.products.config.ProductMapper;
 import com.Product.backend.products.dto.CategoryDTO;
 import com.Product.backend.products.entity.Category;
+import com.Product.backend.products.exception.CategoryAlreadyExistException;
+import com.Product.backend.products.exception.CategoryNotFoundException;
 import com.Product.backend.products.repository.CategoryRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class CategoryService {
@@ -20,6 +22,11 @@ public class CategoryService {
     // create category
 
     public CategoryDTO createCategory(CategoryDTO categoryDTO){
+
+     Optional <Category> optionalCategory =  categoryRepository.findByName(categoryDTO.getName());
+        if (optionalCategory.isPresent()){
+            throw  new CategoryAlreadyExistException("Category "+categoryDTO.getName()+" already exist");
+        }
         Category category = CategoryMapper.toCategoryEntity(categoryDTO);
        category=  categoryRepository.save(category);
        return CategoryMapper.toCategoryDTO(category);
@@ -33,12 +40,12 @@ public class CategoryService {
     }
 
     public CategoryDTO getCategoryById(Long id) {
-        Category category = categoryRepository.findById(id).orElseThrow(()->new RuntimeException("category id not found"));
+        Category category = categoryRepository.findById(id).orElseThrow(()->new CategoryNotFoundException("category id not found"));
         return CategoryMapper.toCategoryDTO(category);
     }
 
     public void deleteCategory(Long id) {
-        Category category = categoryRepository.findById(id).orElseThrow(()-> new RuntimeException("ID not found "));
+        Category category = categoryRepository.findById(id).orElseThrow(()-> new CategoryNotFoundException("ID not found "));
         categoryRepository.delete(category);
     }
     // get all category

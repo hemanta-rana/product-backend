@@ -1,6 +1,5 @@
 package com.Product.backend.products.dto;
 
-import com.Product.backend.products.entity.Product;
 import lombok.*;
 
 import java.util.List;

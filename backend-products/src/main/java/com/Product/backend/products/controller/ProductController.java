@@ -1,13 +1,12 @@
 package com.Product.backend.products.controller;
 
 import com.Product.backend.products.dto.ProductDTO;
-import com.Product.backend.products.entity.Product;
 import com.Product.backend.products.service.ProductService;
 import lombok.AllArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.graphql.GraphQlProperties;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -27,12 +26,14 @@ public class ProductController {
 
     }
     // create product
+    @PreAuthorize("hasAuthority('ROLE_SELLER')")
     @PostMapping
     public ResponseEntity< ProductDTO> createProduct(@RequestBody ProductDTO productDTO){
         return ResponseEntity.status(HttpStatus.CREATED).body(productService.createProduct(productDTO));
 
     }
     // update product
+    @PreAuthorize("hasAuthority('ROLE_SELLER')")
     @PutMapping("/{id}")
     public ResponseEntity <ProductDTO> updateProduct(@RequestBody ProductDTO productDTO,@PathVariable Long id){
         productService.updateProduct(id, productDTO);
@@ -48,6 +49,7 @@ public class ProductController {
     }
 
     // delete product form id
+    @PreAuthorize("hasAuthority('ROLE_SELLER')")
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteProduct(@PathVariable Long id){
         productService.deleteProduct(id);

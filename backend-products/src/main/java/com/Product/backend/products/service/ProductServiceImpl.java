@@ -4,6 +4,8 @@ import com.Product.backend.products.config.ProductMapper;
 import com.Product.backend.products.dto.ProductDTO;
 import com.Product.backend.products.entity.Category;
 import com.Product.backend.products.entity.Product;
+import com.Product.backend.products.exception.CategoryNotFoundException;
+import com.Product.backend.products.exception.ProductNotFoundException;
 import com.Product.backend.products.repository.CategoryRepository;
 import com.Product.backend.products.repository.ProductRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -26,7 +28,7 @@ public class ProductServiceImpl implements ProductService{
 
     @Override
     public ProductDTO createProduct(ProductDTO productDTO) {
-      Category category = categoryRepository.findById(productDTO.getCategoryId()).orElseThrow(()->new RuntimeException("category not found "));
+      Category category = categoryRepository.findById(productDTO.getCategoryId()).orElseThrow(()->new CategoryNotFoundException("category id "+productDTO.getCategoryId()+ " not found "));
         Product product = ProductMapper.toProductEntity(productDTO, category);
         product = productRepository.save(product);
         return ProductMapper.toProductDto(product);
@@ -45,14 +47,14 @@ public class ProductServiceImpl implements ProductService{
 
     @Override
     public ProductDTO getProductById(Long id) {
-       Product product = productRepository.findById(id).orElseThrow(()-> new RuntimeException("id not found "));
+       Product product = productRepository.findById(id).orElseThrow(()-> new ProductNotFoundException("product id "+ id+" not found "));
 
        return ProductMapper.toProductDto(product);
     }
 
     @Override
     public void deleteProduct(Long id) {
-        Product product = productRepository.findById(id).orElseThrow(()-> new RuntimeException("id not found "));
+        Product product = productRepository.findById(id).orElseThrow(()-> new ProductNotFoundException("product id "+ id+" not found "));
         productRepository.delete(product);
       
     }
@@ -60,9 +62,9 @@ public class ProductServiceImpl implements ProductService{
     @Override
     public ProductDTO updateProduct(Long id, ProductDTO productDTO) {
         Product product = productRepository.findById(id)
-                .orElseThrow(()-> new RuntimeException(" prouct id not found"));
+                .orElseThrow(()-> new ProductNotFoundException("product id "+ id+" not found "));
        Category category =categoryRepository.findById(productDTO.getCategoryId())
-               .orElseThrow(()-> new RuntimeException("category id not found "));
+               .orElseThrow(()-> new CategoryNotFoundException("category id not found "));
 
      product.setName(productDTO.getName());
      product.setDescription(productDTO.getDescription());
